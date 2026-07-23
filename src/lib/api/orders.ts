@@ -23,3 +23,17 @@ export async function getMyOrders() {
   const { data } = await apiClient.get<Order[]>('/orders/my-orders');
   return data;
 }
+
+export interface CreateOrderPayload {
+  items: { variantId: string; quantity: number }[];
+}
+
+export async function createOrder(payload: CreateOrderPayload) {
+  const { data } = await apiClient.post<Order>('/orders', payload);
+  return data;
+}
+
+export async function getAllOrders() {
+  const { data } = await apiClient.get<Order[]>('/orders');
+  return data;
+}

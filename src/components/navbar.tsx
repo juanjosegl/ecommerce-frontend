@@ -15,11 +15,17 @@ import { LanguageSwitcher } from "@/components/language-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useAuthStore } from "@/stores/auth-store";
 import { LogOut, User, Package } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
+import { useCartStore } from "@/stores/cart-store";
+import { Badge } from "@/components/ui/badge";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export function Navbar() {
   const t = useTranslations("nav");
   const router = useRouter();
   const { user, clearAuth } = useAuthStore();
+  const totalItems = useCartStore((state) => state.totalItems());
 
   const handleLogout = () => {
     clearAuth();
@@ -41,6 +47,20 @@ export function Navbar() {
           <div className="hidden sm:block">
             <LanguageSwitcher />
           </div>
+          <Link
+            href="/cart"
+            className={cn(
+              buttonVariants({ variant: "ghost", size: "icon" }),
+              "relative",
+            )}
+          >
+            <ShoppingCart className="h-4 w-4" />
+            {totalItems > 0 && (
+              <Badge className="absolute -right-1 -top-1 h-4 w-4 justify-center p-0 text-[10px]">
+                {totalItems}
+              </Badge>
+            )}
+          </Link>
           <ThemeToggle />
 
           {user ? (

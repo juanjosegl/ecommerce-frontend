@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Link } from "@/i18n/navigation";
 import { useAuthStore } from "@/stores/auth-store";
 import { updateProfile } from "@/lib/api/auth";
+import { buttonVariants } from "@/components/ui/button";
 
 const editProfileSchema = z.object({
   firstName: z.string().min(2),
@@ -130,7 +131,9 @@ function ProfileContent() {
           <p className="mb-4 text-sm text-muted-foreground">
             {t("viewOrders")}
           </p>
-          <Button render={<Link href="/orders" />}>{t("myOrders")}</Button>
+          <Link href="/orders" className={buttonVariants()}>
+            {t("myOrders")}
+          </Link>
         </CardContent>
       </Card>
     </div>
