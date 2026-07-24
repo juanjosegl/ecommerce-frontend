@@ -3,7 +3,8 @@
     "appName": "Ecommerce Portfolio",
     "loading": "Loading...",
     "save": "Save",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "confirm": "Confirm"
   },
   "nav": {
     "home": "Home",
@@ -175,6 +176,23 @@
     "date": "Date",
     "allVariants": "All variants",
     "lowStockOnly": "Low stock only",
-    "quantity": "Quantity"
+    "quantity": "Quantity",
+    "ordersTitle": "Order management",
+    "customer": "Customer",
+    "statusUpdated": "Status updated",
+    "noOrdersYet": "No orders yet",
+    "usersTitle": "User management",
+    "newUser": "New user",
+    "role": "Role",
+    "roleAdmin": "Admin",
+    "roleCustomer": "Customer",
+    "provider": "Provider",
+    "deactivate": "Deactivate",
+    "userCreated": "User created",
+    "userUpdated": "User updated",
+    "userDeactivated": "User deactivated",
+    "deactivateConfirmTitle": "Deactivate user?",
+    "deactivateConfirmDescription": "The user won't be able to log in while deactivated.",
+    "total": "Total"
   }
 }
