@@ -33,7 +33,7 @@ export default function LoginPage() {
       const result = await loginUser(data);
       setAuth(result.user, result.accessToken);
       toast.success(t("loginSuccess"));
-      router.push("/profile");
+      router.push(result.user.role === "ADMIN" ? "/admin" : "/profile");
     } catch {
       toast.error(t("invalidCredentials"));
     } finally {

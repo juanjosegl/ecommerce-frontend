@@ -25,7 +25,7 @@ export default function AuthCallbackPage() {
       })
       .then(({ data: user }) => {
         setAuth(user, token);
-        router.push("/profile");
+        router.push(user.role === "ADMIN" ? "/admin" : "/profile");
       })
       .catch(() => {
         router.push("/login");
