@@ -101,12 +101,15 @@ export function Navbar() {
             </DropdownMenu>
           ) : (
             <div className="flex gap-2">
-              <Button variant="ghost" asChild>
-                <Link href="/login">{t("login")}</Link>
-              </Button>
-              <Button asChild>
-                <Link href="/register">{t("register")}</Link>
-              </Button>
+              <Link
+                href="/login"
+                className={buttonVariants({ variant: "ghost" })}
+              >
+                {t("login")}
+              </Link>
+              <Link href="/register" className={buttonVariants()}>
+                {t("register")}
+              </Link>
             </div>
           )}
         </div>
