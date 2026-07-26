@@ -13,6 +13,7 @@ import { useCartStore } from "@/stores/cart-store";
 import { formatCurrency } from "@/lib/format";
 import { createOrder } from "@/lib/api/orders";
 import { buttonVariants } from "@/components/ui/button";
+import { Footer } from "@/components/footer";
 
 function CheckoutContent() {
   const t = useTranslations("catalog");
@@ -107,6 +108,7 @@ export default function CheckoutPage() {
     <AuthGuard>
       <Navbar />
       <CheckoutContent />
+      <Footer />
     </AuthGuard>
   );
 }

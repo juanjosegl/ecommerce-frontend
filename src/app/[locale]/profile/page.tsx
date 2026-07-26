@@ -17,6 +17,7 @@ import { Link } from "@/i18n/navigation";
 import { useAuthStore } from "@/stores/auth-store";
 import { updateProfile } from "@/lib/api/auth";
 import { buttonVariants } from "@/components/ui/button";
+import { Footer } from "@/components/footer";
 
 const editProfileSchema = z.object({
   firstName: z.string().min(2),
@@ -145,6 +146,7 @@ export default function ProfilePage() {
     <AuthGuard>
       <Navbar />
       <ProfileContent />
+      <Footer />
     </AuthGuard>
   );
 }

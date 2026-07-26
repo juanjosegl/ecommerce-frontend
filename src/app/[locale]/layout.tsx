@@ -23,8 +23,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Ecommerce Portfolio",
-  description: "Plataforma de e-commerce empresarial",
+  title: {
+    default: "AM Shop — Moda y estilo para cada ocasión",
+    template: "%s | AM Shop",
+  },
+  description:
+    "Descubre nuestra colección: ropa de calidad, diseño cuidado y envíos a todo el país.",
 };
 
 export default async function RootLayout({

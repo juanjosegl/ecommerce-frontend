@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "Ecommerce Portfolio",
+    "appName": "AM Shop",
     "loading": "Loading...",
     "save": "Save",
     "cancel": "Cancel",
@@ -194,5 +194,24 @@
     "deactivateConfirmTitle": "Deactivate user?",
     "deactivateConfirmDescription": "The user won't be able to log in while deactivated.",
     "total": "Total"
+  },
+  "home": {
+    "heroTitle1": "Wear your style,",
+    "heroTitle2": "your way",
+    "heroDescription": "Pieces built to last, with clean design and quality materials. Find what's yours in our collection.",
+    "shippingBadge": "Nationwide shipping",
+    "secureBadge": "100% secure payment",
+    "returnsBadge": "Hassle-free returns"
+  },
+  "footer": {
+    "tagline": "Clothing and accessories with thoughtful design, built to last.",
+    "contact": "Contact",
+    "allRightsReserved": "All rights reserved.",
+    "builtWith": "Built with Next.js, NestJS, PostgreSQL, and Redis."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "The page you're looking for doesn't exist or was moved. Head back to the catalog to keep browsing.",
+    "backHome": "Back to home"
   }
 }

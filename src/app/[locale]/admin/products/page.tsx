@@ -17,6 +17,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { getProducts, type Product } from "@/lib/api/products";
 import { formatCurrency } from "@/lib/format";
+import { Footer } from "@/components/footer";
 
 export default function AdminProductsPage() {
   const t = useTranslations("admin");
@@ -70,7 +71,9 @@ export default function AdminProductsPage() {
                     </TableCell>
                     <TableCell>{product.variants.length}</TableCell>
                     <TableCell className="hidden sm:table-cell">
-                      <Badge variant={totalStock === 0 ? "destructive" : "secondary"}>
+                      <Badge
+                        variant={totalStock === 0 ? "destructive" : "secondary"}
+                      >
                         {totalStock}
                       </Badge>
                     </TableCell>
@@ -92,6 +95,7 @@ export default function AdminProductsPage() {
           </Table>
         </div>
       )}
+      <Footer />
     </div>
   );
 }

@@ -15,6 +15,7 @@ import { ImageOff, ChevronLeft, Minus, Plus } from "lucide-react";
 import { getProductById, type Product, type ProductVariant } from "@/lib/api/products";
 import { formatCurrency } from "@/lib/format";
 import { useCartStore } from "@/stores/cart-store";
+import { Footer } from "@/components/footer";
 
 export default function ProductDetailPage() {
   const t = useTranslations("catalog");
@@ -194,6 +195,7 @@ export default function ProductDetailPage() {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 }

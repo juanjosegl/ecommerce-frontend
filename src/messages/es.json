@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "Ecommerce Portfolio",
+    "appName": "AM Shop",
     "loading": "Cargando...",
     "save": "Guardar",
     "cancel": "Cancelar",
@@ -194,5 +194,24 @@
     "deactivateConfirmTitle": "¿Desactivar usuario?",
     "deactivateConfirmDescription": "El usuario no podrá iniciar sesión mientras esté desactivado.",
     "total": "Total"
+  },
+  "home": {
+    "heroTitle1": "Viste tu estilo,",
+    "heroTitle2": "a tu manera",
+    "heroDescription": "Piezas pensadas para durar, con un diseño limpio y materiales de calidad. Encuentra lo tuyo en nuestra colección.",
+    "shippingBadge": "Envío a todo el país",
+    "secureBadge": "Pago 100% seguro",
+    "returnsBadge": "Cambios sin complicaciones"
+  },
+  "footer": {
+    "tagline": "Ropa y accesorios con diseño cuidado, pensados para durar.",
+    "contact": "Contacto",
+    "allRightsReserved": "Todos los derechos reservados.",
+    "builtWith": "Construido con Next.js, NestJS, PostgreSQL y Redis."
+  },
+  "notFound": {
+    "title": "Página no encontrada",
+    "description": "La página que buscas no existe o fue movida. Vuelve al catálogo para seguir explorando.",
+    "backHome": "Volver al inicio"
   }
 }

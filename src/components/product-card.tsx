@@ -21,14 +21,14 @@ export function ProductCard({ product }: { product: Product }) {
 
   return (
     <Link href={`/products/${product.id}`}>
-      <Card className="h-full overflow-hidden transition-shadow hover:shadow-md">
-        <AspectRatio ratio={1} className="bg-muted">
+      <Card className="group h-full overflow-hidden transition-shadow hover:shadow-lg">
+        <AspectRatio ratio={1} className="overflow-hidden bg-muted">
           {image ? (
             <Image
               src={image}
               alt={product.name}
               fill
-              className="object-cover"
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center">

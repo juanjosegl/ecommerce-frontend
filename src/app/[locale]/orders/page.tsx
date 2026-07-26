@@ -12,6 +12,7 @@ import { getMyOrders, type Order } from "@/lib/api/orders";
 import { formatCurrency, formatDate } from "@/lib/format";
 import { orderStatusVariant, orderStatusColor } from "@/lib/order-status";
 import { Package } from "lucide-react";
+import { Footer } from "@/components/footer";
 
 function OrdersContent() {
   const t = useTranslations("profile");
@@ -100,6 +101,7 @@ export default function OrdersPage() {
     <AuthGuard>
       <Navbar />
       <OrdersContent />
+      <Footer />
     </AuthGuard>
   );
 }

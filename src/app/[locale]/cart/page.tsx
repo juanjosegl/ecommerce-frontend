@@ -11,6 +11,7 @@ import { useCartStore } from "@/stores/cart-store";
 import { useAuthStore } from "@/stores/auth-store";
 import { formatCurrency } from "@/lib/format";
 import { buttonVariants } from "@/components/ui/button";
+import { Footer } from "@/components/footer";
 
 export default function CartPage() {
   const t = useTranslations("catalog");
@@ -116,6 +117,7 @@ export default function CartPage() {
           </CardContent>
         </Card>
       </div>
+      <Footer />
     </>
   );
 }
