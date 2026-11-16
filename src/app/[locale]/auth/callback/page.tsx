@@ -1,12 +1,14 @@
 "use client";
 
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { apiClient } from "@/lib/api-client";
 import { useAuthStore } from "@/stores/auth-store";
 
-export default function AuthCallbackPage() {
+function Callback() {
+  const t = useTranslations("auth");
   const searchParams = useSearchParams();
   const router = useRouter();
   const setAuth = useAuthStore((state) => state.setAuth);
@@ -15,7 +17,7 @@ export default function AuthCallbackPage() {
     const token = searchParams.get("token");
 
     if (!token) {
-      router.push("/login");
+      router.replace("/login");
       return;
     }
 
@@ -25,16 +27,26 @@ export default function AuthCallbackPage() {
       })
       .then(({ data: user }) => {
         setAuth(user, token);
-        router.push(user.role === "ADMIN" ? "/admin" : "/profile");
+        router.replace(user.role === "ADMIN" ? "/admin" : "/");
       })
       .catch(() => {
-        router.push("/login");
+        router.replace("/login");
       });
   }, [searchParams, router, setAuth]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <p className="text-muted-foreground">Iniciando sesión...</p>
+    <p className="text-muted-foreground" role="status">
+      {t("signingIn")}
+    </p>
+  );
+}
+
+export default function AuthCallbackPage() {
+  return (
+    <div className="flex min-h-dvh items-center justify-center">
+      <Suspense>
+        <Callback />
+      </Suspense>
     </div>
   );
 }

@@ -1,15 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
+import { MailCheck } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Field, FieldLabel, FieldError } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import { AuthShell } from "@/components/auth-shell";
+import { FormField } from "@/components/form-field";
 import {
   forgotPasswordSchema,
   type ForgotPasswordFormData,
@@ -19,18 +19,18 @@ import { forgotPassword } from "@/lib/api/auth";
 export default function ForgotPasswordPage() {
   const t = useTranslations("auth");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [sent, setSent] = useState(false);
+  const [sentTo, setSentTo] = useState<string | null>(null);
 
   const { control, handleSubmit } = useForm<ForgotPasswordFormData>({
     resolver: zodResolver(forgotPasswordSchema),
     defaultValues: { email: "" },
   });
 
-  const onSubmit = async (data: ForgotPasswordFormData) => {
+  const onSubmit = async ({ email }: ForgotPasswordFormData) => {
     setIsSubmitting(true);
     try {
-      await forgotPassword(data.email);
-      setSent(true);
+      await forgotPassword(email);
+      setSentTo(email);
     } catch {
       toast.error(t("genericError"));
     } finally {
@@ -39,52 +39,36 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-4">
-      <Card className="w-full max-w-sm">
-        <CardHeader>
-          <CardTitle className="text-2xl">{t("forgotPasswordTitle")}</CardTitle>
-          <CardDescription>{t("forgotPasswordDescription")}</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {sent ? (
-            <p className="text-center text-sm text-muted-foreground">
-              {t("resetLinkSent")}
-            </p>
-          ) : (
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              <Controller
-                name="email"
-                control={control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor={field.name}>{t("email")}</FieldLabel>
-                    <Input
-                      {...field}
-                      id={field.name}
-                      type="email"
-                      placeholder={t("emailPlaceholder")}
-                      aria-invalid={fieldState.invalid}
-                    />
-                    {fieldState.invalid && (
-                      <FieldError>{t("emailInvalid")}</FieldError>
-                    )}
-                  </Field>
-                )}
-              />
-
-              <Button type="submit" className="w-full" disabled={isSubmitting}>
-                {t("sendResetLink")}
-              </Button>
-            </form>
-          )}
-
-          <p className="text-center text-sm text-muted-foreground">
-            <Link href="/login" className="text-primary hover:underline">
-              {t("backToLogin")}
-            </Link>
-          </p>
-        </CardContent>
-      </Card>
-    </div>
+    <AuthShell
+      title={t("forgotPasswordTitle")}
+      subtitle={sentTo ? undefined : t("forgotPasswordDescription")}
+    >
+      {sentTo ? (
+        <div className="space-y-4" role="status">
+          <MailCheck className="size-8 text-primary" aria-hidden />
+          <p className="text-sm">{t("resetLinkSent", { email: sentTo })}</p>
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
+          <FormField
+            control={control}
+            name="email"
+            label={t("email")}
+            type="email"
+            autoComplete="email"
+            placeholder={t("emailPlaceholder")}
+          />
+          <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
+            {t("sendResetLink")}
+          </Button>
+        </form>
+      )}
+      <Link
+        href="/login"
+        className="mt-8 inline-block text-sm text-primary underline-offset-4 hover:underline"
+      >
+        {t("backToLogin")}
+      </Link>
+    </AuthShell>
   );
 }

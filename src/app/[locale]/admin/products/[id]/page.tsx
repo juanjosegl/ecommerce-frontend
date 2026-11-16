@@ -44,7 +44,6 @@ import {
   type Product,
 } from "@/lib/api/products";
 import { getCategories, type Category } from "@/lib/api/categories";
-import { formatCurrency } from "@/lib/format";
 
 function flattenCategories(
   categories: Category[],
@@ -146,7 +145,7 @@ export default function EditProductPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">{t("editProduct")}</h1>
+      <h1 className="text-3xl">{t("editProduct")}</h1>
 
       <Card>
         <CardHeader>

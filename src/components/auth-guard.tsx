@@ -1,20 +1,21 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "@/i18n/navigation";
+import { usePathname, useRouter } from "@/i18n/navigation";
 import { useAuthStore } from "@/stores/auth-store";
+import { useHydrated } from "@/hooks/use-hydrated";
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const { accessToken, hasHydrated } = useAuthStore();
+  const pathname = usePathname();
+  const { accessToken } = useAuthStore();
+  const hasHydrated = useHydrated();
 
   useEffect(() => {
-    if (!hasHydrated) return;
-
-    if (!accessToken) {
-      router.push("/login");
+    if (hasHydrated && !accessToken) {
+      router.replace(`/login?next=${encodeURIComponent(pathname)}`);
     }
-  }, [hasHydrated, accessToken, router]);
+  }, [hasHydrated, accessToken, pathname, router]);
 
   if (!hasHydrated || !accessToken) {
     return null;

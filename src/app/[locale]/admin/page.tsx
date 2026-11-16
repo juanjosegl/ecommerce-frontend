@@ -6,18 +6,17 @@ import { Link } from "@/i18n/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Package, ShoppingBag, Users, AlertTriangle } from "lucide-react";
+import { Package, ShoppingBag, Users, AlertTriangle, Wallet } from "lucide-react";
 import { getProducts } from "@/lib/api/products";
 import { getAllOrders, type Order } from "@/lib/api/orders";
 import { getUsers } from "@/lib/api/users";
 import { getLowStockVariants, type LowStockVariant } from "@/lib/api/inventory";
-import { formatCurrency, formatDate } from "@/lib/format";
-import { orderStatusVariant } from "@/lib/order-status";
+import { formatCurrency, formatDate, orderRef } from "@/lib/format";
+import { OrderStatusBadge } from "@/components/order-status-badge";
 import { useLocale } from "next-intl";
 
 export default function AdminDashboardPage() {
   const t = useTranslations("admin");
-  const tProfile = useTranslations("profile");
   const locale = useLocale();
 
   const [productCount, setProductCount] = useState<number | null>(null);
@@ -27,7 +26,7 @@ export default function AdminDashboardPage() {
 
   useEffect(() => {
     getProducts().then((data) => setProductCount(data.length));
-    getAllOrders().then(setOrders);
+    getAllOrders().then(setOrders).catch(() => setOrders([]));
     getUsers().then((data) => setUserCount(data.length));
     getLowStockVariants().then(setLowStock);
   }, []);
@@ -36,9 +35,9 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">{t("dashboard")}</h1>
+      <h1 className="text-3xl">{t("dashboard")}</h1>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <Card>
           <CardContent className="flex items-center gap-4 p-4">
             <div className="rounded-lg bg-primary/10 p-3">
@@ -88,6 +87,27 @@ export default function AdminDashboardPage() {
                 <Skeleton className="h-7 w-10" />
               ) : (
                 <p className="text-2xl font-bold">{userCount}</p>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="flex items-center gap-4 p-4">
+            <div className="rounded-lg bg-primary/10 p-3">
+              <Wallet className="h-5 w-5 text-primary" />
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">{t("revenue")}</p>
+              {orders === null ? (
+                <Skeleton className="h-7 w-24" />
+              ) : (
+                <p className="text-2xl font-bold tabular-nums">
+                  {formatCurrency(
+                    orders
+                      .filter((o) => o.status !== "CANCELLED")
+                      .reduce((sum, o) => sum + Number(o.totalAmount), 0),
+                  )}
+                </p>
               )}
             </div>
           </CardContent>
@@ -144,7 +164,7 @@ export default function AdminDashboardPage() {
                 >
                   <div>
                     <p className="font-medium">
-                      #{order.id.slice(0, 8).toUpperCase()}
+                      #{orderRef(order.id)}
                     </p>
                     <p className="text-xs text-muted-foreground">
                       {formatDate(order.createdAt, locale)}
@@ -154,9 +174,7 @@ export default function AdminDashboardPage() {
                     <span className="text-sm">
                       {formatCurrency(order.totalAmount)}
                     </span>
-                    <Badge variant={orderStatusVariant[order.status]}>
-                      {tProfile(`orderStatus.${order.status}` as any)}
-                    </Badge>
+                    <OrderStatusBadge status={order.status} />
                   </div>
                 </div>
               ))}

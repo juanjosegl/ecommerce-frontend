@@ -7,13 +7,32 @@ export interface OrderItem {
   variant: {
     sku: string;
     attributes: Record<string, string>;
-    product: { name: string };
+    product: { id: string; name: string };
   };
+}
+
+export type OrderStatus =
+  | "PENDING"
+  | "CONFIRMED"
+  | "PROCESSING"
+  | "SHIPPED"
+  | "DELIVERED"
+  | "CANCELLED";
+
+export interface ShippingAddress {
+  fullName: string;
+  phone: string;
+  address: string;
+  city: string;
+  department: string;
+  notes?: string;
 }
 
 export interface Order {
   id: string;
-  status: string;
+  status: OrderStatus;
+  shippingAddress?: ShippingAddress | null;
+  user?: { id: string; email: string; firstName: string; lastName: string };
   totalAmount: string;
   createdAt: string;
   items: OrderItem[];
@@ -26,6 +45,7 @@ export async function getMyOrders() {
 
 export interface CreateOrderPayload {
   items: { variantId: string; quantity: number }[];
+  shippingAddress: ShippingAddress;
 }
 
 export async function createOrder(payload: CreateOrderPayload) {
@@ -38,7 +58,7 @@ export async function getAllOrders() {
   return data;
 }
 
-export async function updateOrderStatus(orderId: string, status: string) {
+export async function updateOrderStatus(orderId: string, status: OrderStatus) {
   const { data } = await apiClient.patch<Order>(`/orders/${orderId}/status`, {
     status,
   });

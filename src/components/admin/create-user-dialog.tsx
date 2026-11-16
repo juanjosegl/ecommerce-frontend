@@ -1,5 +1,7 @@
 "use client";
 
+import { httpStatus } from "@/lib/api-client";
+
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
@@ -66,8 +68,8 @@ export function CreateUserDialog({
       reset();
       onOpenChange(false);
       onSuccess();
-    } catch (error: any) {
-      if (error?.response?.status === 409) {
+    } catch (error) {
+      if (httpStatus(error) === 409) {
         toast.error(tAuth("emailTaken"));
       } else {
         toast.error(tAuth("genericError"));

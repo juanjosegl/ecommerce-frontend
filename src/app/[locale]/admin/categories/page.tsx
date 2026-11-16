@@ -84,7 +84,7 @@ export default function AdminCategoriesPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">{t("categoriesTitle")}</h1>
+        <h1 className="text-3xl">{t("categoriesTitle")}</h1>
         <Button onClick={handleCreate}>
           <Plus className="h-4 w-4" />
           {t("newCategory")}

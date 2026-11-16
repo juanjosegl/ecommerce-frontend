@@ -1,35 +1,46 @@
 import type { Metadata } from "next";
-import { Urbanist, Jost, Geist_Mono } from "next/font/google";
+import { Young_Serif, Schibsted_Grotesk, JetBrains_Mono } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
-import { getMessages } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import "../globals.css";
 
-const jost = Jost({
+const sans = Schibsted_Grotesk({
   variable: "--font-sans",
   subsets: ["latin"],
 });
 
-const urbanist = Urbanist({
+const serif = Young_Serif({
   variable: "--font-heading",
   subsets: ["latin"],
-  weight: ["600", "700", "800"],
+  weight: "400",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const mono = JetBrains_Mono({
+  variable: "--font-mono",
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: "AM Shop — Moda y estilo para cada ocasión",
-    template: "%s | AM Shop",
-  },
-  description:
-    "Descubre nuestra colección: ropa de calidad, diseño cuidado y envíos a todo el país.",
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "meta" });
+  return {
+    title: { default: t("title"), template: "%s | AM Shop" },
+    description: t("description"),
+    openGraph: {
+      title: t("title"),
+      description: t("description"),
+      siteName: "AM Shop",
+      locale: locale === "es" ? "es_CO" : "en_US",
+      type: "website",
+    },
+  };
+}
 
 export default async function RootLayout({
   children,
@@ -44,7 +55,7 @@ export default async function RootLayout({
   return (
     <html lang={locale} suppressHydrationWarning>
       <body
-        className={`${jost.variable} ${urbanist.variable} ${geistMono.variable} antialiased font-sans`}
+        className={`${sans.variable} ${serif.variable} ${mono.variable} antialiased font-sans`}
       >
         <NextIntlClientProvider messages={messages}>
           <ThemeProvider

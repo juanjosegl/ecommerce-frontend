@@ -1,30 +1,22 @@
 "use client";
 
 import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { z } from "zod";
+import { Package } from "lucide-react";
 import { AuthGuard } from "@/components/auth-guard";
 import { Navbar } from "@/components/navbar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Footer } from "@/components/footer";
+import { FormField } from "@/components/form-field";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Field, FieldLabel, FieldError } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
 import { Link } from "@/i18n/navigation";
 import { useAuthStore } from "@/stores/auth-store";
 import { updateProfile } from "@/lib/api/auth";
-import { buttonVariants } from "@/components/ui/button";
-import { Footer } from "@/components/footer";
-
-const editProfileSchema = z.object({
-  firstName: z.string().min(2),
-  lastName: z.string().min(2),
-});
-
-type EditProfileFormData = z.infer<typeof editProfileSchema>;
+import { initials } from "@/lib/format";
+import { profileSchema, type ProfileFormData } from "@/lib/validations/auth";
 
 function ProfileContent() {
   const t = useTranslations("profile");
@@ -32,23 +24,22 @@ function ProfileContent() {
   const { user, setAuth, accessToken } = useAuthStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { control, handleSubmit } = useForm<EditProfileFormData>({
-    resolver: zodResolver(editProfileSchema),
+  const { control, handleSubmit, reset, formState } = useForm<ProfileFormData>({
+    resolver: zodResolver(profileSchema),
     defaultValues: {
       firstName: user?.firstName ?? "",
       lastName: user?.lastName ?? "",
     },
   });
 
-  if (!user) return null;
+  if (!user || !accessToken) return null;
 
-  const initials = `${user.firstName[0]}${user.lastName[0]}`.toUpperCase();
-
-  const onSubmit = async (data: EditProfileFormData) => {
+  const onSubmit = async (data: ProfileFormData) => {
     setIsSubmitting(true);
     try {
       const updated = await updateProfile(data);
-      setAuth(updated, accessToken!);
+      setAuth(updated, accessToken);
+      reset(data);
       toast.success(t("updateSuccess"));
     } catch {
       toast.error(tAuth("genericError"));
@@ -58,86 +49,52 @@ function ProfileContent() {
   };
 
   return (
-    <div className="mx-auto max-w-2xl p-4 py-8">
-      <h1 className="mb-6 text-3xl font-bold">{t("title")}</h1>
+    <main id="main" className="mx-auto max-w-3xl px-4 pt-12 sm:px-6">
+      <div className="flex items-center gap-5">
+        <Avatar className="size-16">
+          <AvatarImage src={user.avatar ?? undefined} alt="" />
+          <AvatarFallback className="text-lg">
+            {initials(user.firstName, user.lastName)}
+          </AvatarFallback>
+        </Avatar>
+        <div className="min-w-0">
+          <h1 className="truncate text-4xl">
+            {user.firstName} {user.lastName}
+          </h1>
+          <p className="truncate text-sm text-muted-foreground">{user.email}</p>
+        </div>
+      </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("personalInfo")}</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="flex items-center gap-4">
-            <Avatar className="h-16 w-16">
-              <AvatarImage src={user.avatar ?? undefined} />
-              <AvatarFallback className="text-lg">{initials}</AvatarFallback>
-            </Avatar>
-            <p className="text-sm text-muted-foreground">{user.email}</p>
+      <section aria-labelledby="personal-info" className="mt-12 border-t pt-8">
+        <h2 id="personal-info" className="text-2xl">
+          {t("personalInfo")}
+        </h2>
+        <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-5" noValidate>
+          <div className="grid gap-5 sm:grid-cols-2">
+            <FormField control={control} name="firstName" label={tAuth("firstName")} autoComplete="given-name" />
+            <FormField control={control} name="lastName" label={tAuth("lastName")} autoComplete="family-name" />
           </div>
+          <Button type="submit" disabled={isSubmitting || !formState.isDirty}>
+            {t("saveChanges")}
+          </Button>
+        </form>
+      </section>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <Controller
-                name="firstName"
-                control={control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor={field.name}>
-                      {tAuth("firstName")}
-                    </FieldLabel>
-                    <Input
-                      {...field}
-                      id={field.name}
-                      aria-invalid={fieldState.invalid}
-                    />
-                    {fieldState.invalid && (
-                      <FieldError>{tAuth("nameMin")}</FieldError>
-                    )}
-                  </Field>
-                )}
-              />
-
-              <Controller
-                name="lastName"
-                control={control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor={field.name}>
-                      {tAuth("lastName")}
-                    </FieldLabel>
-                    <Input
-                      {...field}
-                      id={field.name}
-                      aria-invalid={fieldState.invalid}
-                    />
-                    {fieldState.invalid && (
-                      <FieldError>{tAuth("nameMin")}</FieldError>
-                    )}
-                  </Field>
-                )}
-              />
-            </div>
-
-            <Button type="submit" disabled={isSubmitting}>
-              {t("saveChanges")}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-
-      <Card className="mt-4">
-        <CardHeader>
-          <CardTitle>{t("myOrders")}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="mb-4 text-sm text-muted-foreground">
-            {t("viewOrders")}
-          </p>
-          <Link href="/orders" className={buttonVariants()}>
-            {t("myOrders")}
-          </Link>
-        </CardContent>
-      </Card>
-    </div>
+      <section className="mt-12 border-t pt-8">
+        <Link
+          href="/orders"
+          className="flex items-center justify-between gap-4 rounded-md border p-5 transition-colors hover:bg-muted/60"
+        >
+          <span className="flex items-center gap-4">
+            <Package className="size-5 text-primary" aria-hidden />
+            <span>
+              <span className="block font-medium">{t("myOrders")}</span>
+              <span className="block text-sm text-muted-foreground">{t("viewOrders")}</span>
+            </span>
+          </span>
+        </Link>
+      </section>
+    </main>
   );
 }
 

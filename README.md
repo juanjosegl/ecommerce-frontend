@@ -6,7 +6,7 @@ A fully bilingual, light/dark-mode e-commerce frontend built with Next.js 16 and
 **Backend repo:** [ecommerce-backend](https://github.com/juanjosegl/ecommerce-backend)
 **Backend API docs:** https://am-shop-backend.onrender.com/api-docs
 
-> ⚠️ The backend runs on Render's free tier and may take 30–50 seconds to respond on the first request after inactivity. If the catalog looks empty on first load, give it a moment and refresh.
+> **Note:** the backend runs on Render's free tier and may take 30–50 seconds to wake up on the first request. The storefront tells visitors when that happens instead of showing an empty page.
 
 ### Demo accounts
 
@@ -22,13 +22,18 @@ Or register a new account, or sign in with Google.
 ## What's implemented
 
 **Storefront**
-- Product catalog with category filtering, variant selection (size/color), and stock-aware quantity controls
-- Cart with persisted state (`localStorage` via Zustand) and stock-capped quantities
-- Checkout that creates a real transactional order against the backend
-- Order history with status badges
+- Catalog with accent-insensitive search, sorting, and category filters that include subcategories
+- Product page with image gallery and a variant picker that keeps compatible choices (changing size keeps the color when that combination exists) and marks sold-out combinations
+- Cart with persisted state (`localStorage` via Zustand), product thumbnails, and quantities capped by stock (including what is already in the cart)
+- Checkout with validated Colombian shipping details (10-digit mobile starting with 3, department list) that creates a real transactional order
+- Order history with a status progress bar, line totals, shipping address and a confirmation banner after purchase
+- Hydration-safe rendering of persisted state, skip link, labelled controls, reduced-motion support
 
 **Auth**
 - Email/password and Google OAuth, with automatic account linking on the backend
+- Shared password policy on client and server (8+ characters, a letter and a number), confirmation field, show/hide toggle
+- Returns the user to where they were (e.g. checkout) after signing in, with an open-redirect guard
+- One-click demo account fill on the login page
 - Password recovery flow (request → emailed link → reset)
 - Self-service profile editing
 
@@ -37,12 +42,12 @@ Or register a new account, or sign in with Google.
 - Category management (hierarchical, with parent/child relationships)
 - Product management: create/edit, dynamic variant fields, real image uploads to Cloudinary
 - Inventory management: register stock movements (IN/OUT) with required reason, view movement history per variant
-- Order management: change order status
+- Order management: expandable rows with items and shipping address; only valid status transitions are offered, and cancelling asks for confirmation because it restocks inventory
 - User management: create staff/admin accounts, change roles, deactivate users (with safeguards so an admin can't demote or deactivate themselves)
 
 **Platform features**
 - Full i18n (Spanish/English) via `next-intl`, including a locale-prefixed route structure (`/es/...`, `/en/...`)
-- Light/dark theme via `next-themes`, with a custom emerald-based color system defined in Tailwind v4 `@theme` variables
+- Light/dark theme via `next-themes`, with an indigo-on-limewash color system ("Ciudad Blanca") defined as Tailwind v4 tokens
 - Fully responsive, mobile-first layouts across storefront and admin panel
 
 ---
@@ -60,7 +65,7 @@ Or register a new account, or sign in with Google.
 | i18n | `next-intl` |
 | Theming | `next-themes` |
 | HTTP client | `axios` (with request/response interceptors for auth) |
-| Fonts | Urbanist (headings) + Jost (body) |
+| Fonts | Young Serif (headings) + Schibsted Grotesk (body) |
 
 ---
 
