@@ -52,7 +52,7 @@ export default function AdminInventoryPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">{t("inventoryTitle")}</h1>
+      <h1 className="text-3xl">{t("inventoryTitle")}</h1>
 
       {variants === null && <Skeleton className="h-64 w-full" />}
 

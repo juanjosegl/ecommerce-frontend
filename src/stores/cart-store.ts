@@ -5,6 +5,7 @@ export interface CartItem {
   variantId: string;
   productId: string;
   productName: string;
+  image?: string;
   sku: string;
   attributes: Record<string, string>;
   price: number;
@@ -45,7 +46,12 @@ export const useCartStore = create<CartState>()(
             ),
           });
         } else {
-          set({ items: [...get().items, item] });
+          set({
+            items: [
+              ...get().items,
+              { ...item, quantity: Math.min(item.quantity, item.maxStock) },
+            ],
+          });
         }
       },
 
@@ -76,6 +82,7 @@ export const useCartStore = create<CartState>()(
     }),
     {
       name: 'cart-storage',
+      version: 1,
     },
   ),
 );

@@ -1,5 +1,7 @@
 "use client";
 
+import { apiMessage } from "@/lib/api-client";
+
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
@@ -63,8 +65,8 @@ export function MovementDialog({
       reset();
       onOpenChange(false);
       onSuccess();
-    } catch (error: any) {
-      toast.error(error?.response?.data?.message ?? tAuth("genericError"));
+    } catch (error) {
+      toast.error(apiMessage(error) ?? tAuth("genericError"));
     }
   };
 

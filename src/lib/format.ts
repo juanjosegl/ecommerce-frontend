@@ -14,3 +14,12 @@ export function formatDate(date: string, locale: string): string {
     day: "numeric",
   }).format(new Date(date));
 }
+
+export function initials(firstName = "", lastName = ""): string {
+  return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase() || "?";
+}
+
+/** Short human order reference, e.g. "A1B2C3D4". */
+export function orderRef(id: string): string {
+  return id.slice(0, 8).toUpperCase();
+}

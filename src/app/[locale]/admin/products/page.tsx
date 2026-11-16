@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Plus, Pencil } from "lucide-react";
 import { Link } from "@/i18n/navigation";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -16,8 +16,6 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { getProducts, type Product } from "@/lib/api/products";
-import { formatCurrency } from "@/lib/format";
-import { Footer } from "@/components/footer";
 
 export default function AdminProductsPage() {
   const t = useTranslations("admin");
@@ -30,7 +28,7 @@ export default function AdminProductsPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">{t("productsTitle")}</h1>
+        <h1 className="text-3xl">{t("productsTitle")}</h1>
         <Link href="/admin/products/new" className={buttonVariants()}>
           <Plus className="h-4 w-4" />
           {t("newProduct")}
@@ -95,7 +93,6 @@ export default function AdminProductsPage() {
           </Table>
         </div>
       )}
-      <Footer />
     </div>
   );
 }

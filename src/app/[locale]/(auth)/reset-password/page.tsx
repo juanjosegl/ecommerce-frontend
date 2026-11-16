@@ -1,42 +1,54 @@
 "use client";
 
-import { useState } from "react";
-import { useSearchParams } from "next/navigation";
-import { Controller, useForm } from "react-hook-form";
+import { Suspense, useState } from "react";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { Link, useRouter } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Field, FieldLabel, FieldError } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import { AuthShell } from "@/components/auth-shell";
+import { FormField } from "@/components/form-field";
 import {
   resetPasswordSchema,
   type ResetPasswordFormData,
 } from "@/lib/validations/auth";
 import { resetPassword } from "@/lib/api/auth";
 
-export default function ResetPasswordPage() {
+function ResetPasswordForm() {
   const t = useTranslations("auth");
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const token = searchParams.get("token");
+  const token = useSearchParams().get("token");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { control, handleSubmit } = useForm<ResetPasswordFormData>({
     resolver: zodResolver(resetPasswordSchema),
-    defaultValues: { newPassword: "" },
+    defaultValues: { newPassword: "", confirmPassword: "" },
   });
 
-  const onSubmit = async (data: ResetPasswordFormData) => {
-    if (!token) return;
+  if (!token) {
+    return (
+      <div className="space-y-4">
+        <p className="text-sm text-muted-foreground">
+          {t("resetPasswordInvalid")}
+        </p>
+        <Link
+          href="/forgot-password"
+          className="text-sm text-primary underline-offset-4 hover:underline"
+        >
+          {t("requestNewLink")}
+        </Link>
+      </div>
+    );
+  }
 
+  const onSubmit = async (data: ResetPasswordFormData) => {
     setIsSubmitting(true);
     try {
       await resetPassword(token, data.newPassword);
       toast.success(t("resetPasswordSuccess"));
-      router.push("/login");
+      router.replace("/login");
     } catch {
       toast.error(t("resetPasswordInvalid"));
     } finally {
@@ -44,58 +56,40 @@ export default function ResetPasswordPage() {
     }
   };
 
-  if (!token) {
-    return (
-      <div className="flex min-h-screen items-center justify-center p-4">
-        <Card className="w-full max-w-sm">
-          <CardContent className="pt-6 text-center">
-            <p className="mb-4 text-sm text-muted-foreground">
-              {t("resetPasswordInvalid")}
-            </p>
-            <Link href="/forgot-password" className="text-primary hover:underline">
-              {t("forgotPassword")}
-            </Link>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
   return (
-    <div className="flex min-h-screen items-center justify-center p-4">
-      <Card className="w-full max-w-sm">
-        <CardHeader>
-          <CardTitle className="text-2xl">{t("resetPasswordTitle")}</CardTitle>
-          <CardDescription>{t("resetPasswordDescription")}</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <Controller
-              name="newPassword"
-              control={control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor={field.name}>{t("newPassword")}</FieldLabel>
-                  <Input
-                    {...field}
-                    id={field.name}
-                    type="password"
-                    placeholder={t("passwordPlaceholder")}
-                    aria-invalid={fieldState.invalid}
-                  />
-                  {fieldState.invalid && (
-                    <FieldError>{t("passwordMin")}</FieldError>
-                  )}
-                </Field>
-              )}
-            />
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
+      <FormField
+        control={control}
+        name="newPassword"
+        label={t("newPassword")}
+        type="password"
+        autoComplete="new-password"
+        description={t("passwordHint")}
+      />
+      <FormField
+        control={control}
+        name="confirmPassword"
+        label={t("confirmPassword")}
+        type="password"
+        autoComplete="new-password"
+      />
+      <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
+        {t("resetPasswordButton")}
+      </Button>
+    </form>
+  );
+}
 
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
-              {t("resetPasswordButton")}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
+export default function ResetPasswordPage() {
+  const t = useTranslations("auth");
+  return (
+    <AuthShell
+      title={t("resetPasswordTitle")}
+      subtitle={t("resetPasswordDescription")}
+    >
+      <Suspense>
+        <ResetPasswordForm />
+      </Suspense>
+    </AuthShell>
   );
 }

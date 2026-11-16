@@ -25,3 +25,15 @@ apiClient.interceptors.response.use(
     return Promise.reject(error);
   },
 );
+
+/** HTTP status of a failed API call, or undefined for network errors. */
+export function httpStatus(error: unknown): number | undefined {
+  return axios.isAxiosError(error) ? error.response?.status : undefined;
+}
+
+/** Backend error message (NestJS shape), if the API sent one. */
+export function apiMessage(error: unknown): string | undefined {
+  if (!axios.isAxiosError(error)) return undefined;
+  const message = (error.response?.data as { message?: string | string[] })?.message;
+  return Array.isArray(message) ? message[0] : message;
+}

@@ -1,31 +1,29 @@
 "use client";
 
-import * as React from "react";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
+import { useHydrated } from "@/hooks/use-hydrated";
 
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = React.useState(false);
+  const t = useTranslations("nav");
+  const { resolvedTheme, setTheme } = useTheme();
+  const hydrated = useHydrated();
 
-  React.useEffect(() => setMounted(true), []);
-
-  if (!mounted) {
-    return <div className="h-9 w-9" />;
+  if (!hydrated) {
+    return <div className="size-9" aria-hidden />;
   }
 
+  const isDark = resolvedTheme === "dark";
   return (
     <Button
       variant="ghost"
       size="icon"
-      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+      aria-label={t(isDark ? "lightMode" : "darkMode")}
+      onClick={() => setTheme(isDark ? "light" : "dark")}
     >
-      {theme === "dark" ? (
-        <Sun className="h-4 w-4" />
-      ) : (
-        <Moon className="h-4 w-4" />
-      )}
+      {isDark ? <Sun className="size-4" /> : <Moon className="size-4" />}
     </Button>
   );
 }

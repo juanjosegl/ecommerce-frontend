@@ -31,12 +31,13 @@ export function MovementHistoryDialog({
 }: MovementHistoryDialogProps) {
   const t = useTranslations("admin");
   const locale = useLocale();
-  const [movements, setMovements] = useState<InventoryMovement[] | null>(null);
+  // Keyed by variant so switching variants never flashes the previous history.
+  const [loaded, setLoaded] = useState<{ id: string; movements: InventoryMovement[] } | null>(null);
+  const movements = loaded && loaded.id === variantId ? loaded.movements : null;
 
   useEffect(() => {
     if (open && variantId) {
-      setMovements(null);
-      getMovementsByVariant(variantId).then(setMovements);
+      getMovementsByVariant(variantId).then((movements) => setLoaded({ id: variantId, movements }));
     }
   }, [open, variantId]);
 

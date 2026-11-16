@@ -28,9 +28,10 @@ export interface Product {
   images: ProductImage[];
 }
 
+// shortcut: loads up to 100 products and filters/sorts client-side; move search and sort to the API when the catalog outgrows that.
 export async function getProducts(categoryId?: string) {
   const { data } = await apiClient.get<Product[]>("/products", {
-    params: categoryId ? { categoryId } : undefined,
+    params: { limit: 100, ...(categoryId ? { categoryId } : {}) },
   });
   return data;
 }

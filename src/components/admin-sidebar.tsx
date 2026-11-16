@@ -21,7 +21,7 @@ const links = [
   { href: "/admin/inventory", icon: Warehouse, key: "inventory" },
   { href: "/admin/orders", icon: ShoppingBag, key: "orders" },
   { href: "/admin/users", icon: Users, key: "users" },
-];
+] as const;
 
 export function AdminSidebarNav({ onNavigate }: { onNavigate?: () => void }) {
   const t = useTranslations("admin");
@@ -29,7 +29,7 @@ export function AdminSidebarNav({ onNavigate }: { onNavigate?: () => void }) {
 
   return (
     <nav className="flex h-full flex-col gap-1 p-3">
-      <p className="mb-2 px-2 font-heading text-lg font-bold">
+      <p className="mb-4 px-3 pt-2 font-heading text-xl leading-tight">
         {t("panel")}
       </p>
 
@@ -49,7 +49,7 @@ export function AdminSidebarNav({ onNavigate }: { onNavigate?: () => void }) {
             )}
           >
             <Icon className="h-4 w-4" />
-            {t(key as any)}
+            {t(key)}
           </Link>
         );
       })}
