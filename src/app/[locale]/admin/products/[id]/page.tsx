@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -85,7 +85,7 @@ export default function EditProductPage() {
     },
   });
 
-  const loadProduct = () => {
+  const loadProduct = useCallback(() => {
     getProductById(productId).then((data) => {
       setProduct(data);
       reset({
@@ -95,12 +95,12 @@ export default function EditProductPage() {
         isActive: data.isActive,
       });
     });
-  };
+  }, [productId, reset]);
 
   useEffect(() => {
     loadProduct();
     getCategories().then(setCategories);
-  }, [productId]);
+  }, [loadProduct]);
 
   const onSubmitBasicInfo = async (data: BasicInfoFormData) => {
     try {
