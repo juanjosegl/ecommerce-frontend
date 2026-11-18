@@ -45,7 +45,7 @@ export function Navbar() {
       </a>
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
         <div className="flex items-center gap-8">
-          <Link href="/" className="font-heading text-2xl leading-none">
+          <Link href="/" className="shrink-0 whitespace-nowrap font-heading text-2xl leading-none">
             AM Shop
           </Link>
           <nav className="hidden text-sm sm:block" aria-label={t("main")}>
